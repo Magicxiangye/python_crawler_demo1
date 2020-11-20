@@ -16,6 +16,8 @@ import builtwith
 # python2中则是相反的，ASCII编码字符串是默认，Unicode字符串要在前面加操作符u或U
 #encode和decode分别指编码和解码。
 
+#测试提交
+
 #网页爬取下载(网页的下载函数)（没有重复下载的机制，遇到错误多试几次）#加入了可以使用代理的选项
 def download(url,user_agent='magicye',proxy=None,num_retries=2):
     print('Downloading:',url)
