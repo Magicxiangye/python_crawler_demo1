@@ -115,4 +115,5 @@ if __name__ == '__main__':
    link_regex = '/(index|places)/(index|default)/(index|view)'#地址后缀要写对
    test = link_crawler(url,link_regex)
    print(test)
+   print("youma")
 
