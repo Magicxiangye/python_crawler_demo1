@@ -5,6 +5,7 @@ import chardet   #需要导入这个模块，检测编码格式
 import itertools #操作迭代对象的函数
 import urllib.parse #来创建url的绝对路径（url的解析，合并，编码，解码）
 import urllib.robotparser #还是python3的独特拆分
+from bs4 import BeautifulSoup#一个网页的解析模块（缺失的网页也可以解析）(用lxml模块库解析也可以，但是安装比较复杂)
 import builtwith
 
 # 从str到bytes:调用方法encode().
@@ -16,6 +17,8 @@ import builtwith
 # python2中则是相反的，ASCII编码字符串是默认，Unicode字符串要在前面加操作符u或U
 #encode和decode分别指编码和解码。
 
+#分析爬取网页的特征的set集
+FIELDS = ('area','populattion','iso','country')
 
 #网页爬取下载(网页的下载函数)（没有重复下载的机制，遇到错误多试几次）#加入了可以使用代理的选项
 def download(url,user_agent='magicye',proxy=None,num_retries=2):
@@ -74,14 +77,26 @@ def get_links(html):
     #返回相对应的list
     return webpage_regex.findall(html)
 
+#爬虫的回调函数(简单的只是把结果保存，类文件里是把爬取的数据保存到.csv的文件中)
+def scrape_callback(url,html):
+    if re.search('/view/',url):
+        soup = BeautifulSoup(html,"html.parser")
+        results = {}
+        for field in FIELDS:
+            results[field] = soup.find('table').find('tr',id='places_%s_row'%field).find('td',class_='w2p_fw').text
+        print(results)
+
 #链接爬虫
 def link_crawler(seed_url,link_regex,user_agent='GoodCrawler',max_depth =-2):#有的时候代理名要换(爬虫陷阱功能要禁用的话，max_depth为负数就可以)
     crawl_queue = [seed_url]
     print(crawl_queue)
     #使用set表来计入无重复值的表单
     seen = set(crawl_queue)
+    #爬虫陷阱功能中深度的定义的变量
     depth_dict = {}
     depth_dict[seed_url] = 0
+    #抓取回调的功能设置的List
+    links = []
     while crawl_queue:
         url = crawl_queue.pop()
         depth = depth_dict[url]
@@ -108,10 +123,37 @@ def link_crawler(seed_url,link_regex,user_agent='GoodCrawler',max_depth =-2):#�
     return crawl_queue
 
 
+# 正则表达式抓取网页的内容（小测试）
+def NormalDataCatch():
+    url = 'http://example.webscraping.com/places/default/view/Afghanistan-1'
+    html = download(url)
+    encode_type = chardet.detect(html)
+    html = html.decode(encode_type['encoding'])  # 转换码的格式
+    # 定义正则来抓取(正则表达式写健壮一点，未来就可以避免布局变换而无法使用，可以加上父类元素（父类元素有id是唯一的）一定要写对所有的元素都得全)
+    output = re.findall(
+        '<tr id="places_area__row"><td class="w2p_fl"><label class="readonly" for="places_area" id="places_area__label">Area: </label></td><td class="w2p_fw">(.*?)</td>',
+        html)
+    return output
 
+#解析网页的模块来爬取内容
+def bs4MethodDataCatch():
+    url = 'http://example.webscraping.com/places/default/view/Afghanistan-1'
+    htmls = download(url)
+    soup = BeautifulSoup(htmls,"html.parser")#传入网页进行分析
+    #定位到要获取数据的位子
+    tr = soup.find(attrs={'id':'places_area__row'})#用来找这个tr的属性（常用id，因为唯一）
+    td = tr.find(attrs={'class':'w2p_fw'})#再定位一层
+    area = td.text#获取到内容
+    return area
+
+#运行
 if __name__ == '__main__':
-   url = 'http://example.webscraping.com'
-   link_regex = '/(index|places)/(index|default)/(index|view)'#地址后缀要写对
-   test = link_crawler(url,link_regex)
-   print(test)
+   # url = 'http://example.webscraping.com'
+   # link_regex = '/(index|places)/(index|default)/(index|view)'#地址后缀要写对
+   # test = link_crawler(url,link_regex)
+   # print(test)
+   #正则表达式抓取网页的内容
+   output = bs4MethodDataCatch()
+   print(output)
+
 
