@@ -6,7 +6,7 @@ import itertools #操作迭代对象的函数
 import urllib.parse #来创建url的绝对路径（url的解析，合并，编码，解码）
 import urllib.robotparser #还是python3的独特拆分
 from bs4 import BeautifulSoup#一个网页的解析模块（缺失的网页也可以解析）(用lxml模块库解析也可以，但是安装比较复杂)
-import builtwith
+from classMethod.ScrapeCallBack_Save import ScrapeCallBack
 
 # 从str到bytes:调用方法encode().
 # 编码是把Unicode字符串以各种方式编码成为机器能读懂的ASCII字符串
@@ -87,7 +87,7 @@ def scrape_callback(url,html):
         print(results)
 
 #链接爬虫
-def link_crawler(seed_url,link_regex,user_agent='GoodCrawler',max_depth =-2):#有的时候代理名要换(爬虫陷阱功能要禁用的话，max_depth为负数就可以)
+def link_crawler(seed_url,link_regex,user_agent='GoodCrawler',max_depth =2,scrape_callback=None):#有的时候代理名要换(爬虫陷阱功能要禁用的话，max_depth为负数就可以)
     crawl_queue = [seed_url]
     print(crawl_queue)
     #使用set表来计入无重复值的表单
@@ -106,6 +106,9 @@ def link_crawler(seed_url,link_regex,user_agent='GoodCrawler',max_depth =-2):#�
         rp.read()#开始robots解析
         if rp.can_fetch(user_agent,url):
             html = download(url)
+            #记入网页的数据
+            if scrape_callback:
+                links.extend(scrape_callback(url,html) or [])
             #还得解码编码
             encode_type = chardet.detect(html)
             html = html.decode(encode_type['encoding'])
@@ -148,12 +151,12 @@ def bs4MethodDataCatch():
 
 #运行
 if __name__ == '__main__':
-   # url = 'http://example.webscraping.com'
-   # link_regex = '/(index|places)/(index|default)/(index|view)'#地址后缀要写对
-   # test = link_crawler(url,link_regex)
-   # print(test)
+   url = 'http://example.webscraping.com'
+   link_regex = '/(index|places)/(index|default)/(index|view)'#地址后缀要写对
+   test = link_crawler(url,link_regex,scrape_callback=ScrapeCallBack())
+   print(test)
    #正则表达式抓取网页的内容
-   output = bs4MethodDataCatch()
-   print(output)
+   # output = bs4MethodDataCatch()
+   # print(output)
 
 
