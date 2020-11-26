@@ -20,7 +20,7 @@ from classMethod.ScrapeCallBack_Save import ScrapeCallBack
 #分析爬取网页的特征的set集
 FIELDS = ('area','populattion','iso','country')
 
-#网页爬取下载(网页的下载函数)（没有重复下载的机制，遇到错误多试几次）#加入了可以使用代理的选项
+#网页爬取下载(网页的下载函数)（没有重复下载的机制，遇到错误多试几次）#加入了可以使用代理的选项(有时间加上重新下载的机制，在下载类里已经有了)
 def download(url,user_agent='magicye',proxy=None,num_retries=2):
     print('Downloading:',url)
     headers = {'User-agent': user_agent}#请求头，字典类型(可以伪装成浏览器)
@@ -86,7 +86,7 @@ def scrape_callback(url,html):
             results[field] = soup.find('table').find('tr',id='places_%s_row'%field).find('td',class_='w2p_fw').text
         print(results)
 
-#链接爬虫
+#链接爬虫（这里还没更新成下载类的新的下载方法,标记一下）
 def link_crawler(seed_url,link_regex,user_agent='GoodCrawler',max_depth =2,scrape_callback=None):#有的时候代理名要换(爬虫陷阱功能要禁用的话，max_depth为负数就可以)
     crawl_queue = [seed_url]
     print(crawl_queue)
