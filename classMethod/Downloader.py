@@ -28,9 +28,10 @@ class Downloader:
                 pass
             #下载错误继续下载的功能(看看能不能成功)
             else:
-                print(result['code'])
-                if self.num_retries > 0 and 500 < int(result['code']) < 600:
-                    result = None#重新下载
+                pass
+                # print(result['code'])
+                # if self.num_retries > 0 and 500 < result['code'] < 600:
+                #     result = None#重新下载
 
         if result is None:
             #这个url，没有缓存，需要下载然后加入cache列表
