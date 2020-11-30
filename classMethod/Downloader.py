@@ -8,6 +8,7 @@ import itertools #操作迭代对象的函数
 import urllib.parse #来创建url的绝对路径（url的解析，合并，编码，解码）
 import urllib.robotparser #还是python3的独特拆分
 from classMethod.Throttle import Throttle
+import socket
 
 class Downloader:
     #默认的设置
@@ -27,8 +28,8 @@ class Downloader:
                 pass
             #下载错误继续下载的功能(看看能不能成功)
             else:
-                if self.num_retries > 0 and \
-                    500 < result['code'] < 600:
+                print(result['code'])
+                if self.num_retries > 0 and 500 < int(result['code']) < 600:
                     result = None#重新下载
 
         if result is None:
@@ -64,7 +65,7 @@ class Downloader:
                     #返回5xx的HTTP错误重新下载试试
                     return self.download(url,headers,proxy,num_retries-1)
 
-        return {'html':html,'code':code}#注意输出变成了字典（要提取一下）
+        return {'html': html, 'code': code}#注意输出变成了字典（要提取一下）
 
 
 
