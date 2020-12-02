@@ -21,7 +21,7 @@ from classMethod.ScrapeCallBack_Save import ScrapeCallBack
 FIELDS = ('area','populattion','iso','country')
 
 #网页爬取下载(网页的下载函数)（没有重复下载的机制，遇到错误多试几次）#加入了可以使用代理的选项(有时间加上重新下载的机制，在下载类里已经有了)
-def download(url,user_agent='magicye',proxy=None,num_retries=2):
+def download(url,user_agent='magicye12138',proxy=None,num_retries=2):
     print('Downloading:',url)
     headers = {'User-agent': user_agent}#请求头，字典类型(可以伪装成浏览器)
     request = urllib.request.Request(url,headers=headers)
@@ -151,8 +151,8 @@ def bs4MethodDataCatch():
 
 #运行
 if __name__ == '__main__':
-   url = 'http://example.webscraping.com'
-   link_regex = '/(index|places)/(index|default)/(index|view)'#地址后缀要写对
+   url = "http://example.webscraping.com"
+   link_regex = "/(index|places)/(index|default)/(index|view)"#地址后缀要写对
    test = link_crawler(url,link_regex,scrape_callback=ScrapeCallBack())
    print(test)
    #正则表达式抓取网页的内容

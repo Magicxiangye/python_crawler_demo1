@@ -46,6 +46,7 @@ class DiskCache:
         """Return whether this timestamp has expired
         """
         return datetime.utcnow() > timestamp + self.expires
+
     #根据文件名获取Cache的对象
     def __getitem__(self, url):
         """Load data from disk for this URL
@@ -58,6 +59,7 @@ class DiskCache:
                     data = zlib.decompress(data)
                 result, timestamp = pickle.loads(data)
                 print(result,'exist')
+                #检验文件的过期时间（用自定义的has_expired()函数判断）
                 if self.has_expired(timestamp):
                     raise KeyError(url + ' has expired')
                 return result
@@ -82,4 +84,4 @@ class DiskCache:
 
 
 if __name__ =='__main__':
-    link_crawler('http://bing.com', '/(index|places)/(index|default)/(index|view)', cache=DiskCache())
+    link_crawler("http://example.webscraping.com", '/(index|places)/(index|default)/(index|view)', cache=DiskCache())

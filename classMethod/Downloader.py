@@ -12,7 +12,7 @@ import socket
 
 class Downloader:
     #默认的设置
-    def __init__(self,delay=5,user_agent='magicye',proxies=None,num_retries=1,cache=None):
+    def __init__(self,delay=5,user_agent='magicye12138',proxies=None,num_retries=1,cache=None):
         self.throttle = Throttle(delay) #下载限速
         self.user_agent = user_agent #伪装用户的头
         self.proxies = proxies #代理选项
