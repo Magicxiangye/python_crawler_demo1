@@ -56,7 +56,8 @@ class Downloader:
             proxy_params = {urllib.parse.urlparse(url).scheme: proxy}  # url协议有默认的,没有的话加上--像'http'
             opener.add_handler(urllib.request.ProxyHandler(proxy_params))
         try:
-            html = urllib.request.urlopen(request).read()
+            #直接格式转换btyes变为str(后面就不用麻烦了)
+            html = urllib.request.urlopen(request).read().decode('utf-8')
         except urllib.error.HTTPError as e:
             print('Download error', e.reason)
             html = None

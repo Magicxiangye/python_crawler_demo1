@@ -7,8 +7,10 @@ import pickle
 import zlib
 #把字符串数据以bson形式存储到mongodb
 from bson.binary import Binary
+import crawler
 
 from classMethod.link_crawler import link_crawler
+from classMethod.Alexa_Callback_function import AlexaCallback
 
 #数据库的缓存类
 
@@ -45,4 +47,8 @@ class MongoCache:
 #test the method MongoDB(use the same downloadmethods ps:net is the important things )
 if __name__ == '__main__':
     #test
-    link_crawler("http://example.webscraping.com", '/(index|places)/(index|default)/(index|view)', cache=MongoCache())
+    #下载这个网页的回调函数
+    scrape_callback = AlexaCallback()
+    test_url = 'http://s3.amazonaws.com/alexa-static/top-1m.csv.zip'
+    #用的时候把检视爬虫文件的功能去掉，就可以正常的爬取了
+    link_crawler(seed_url=test_url, cache=MongoCache(),scrape_callback=scrape_callback)

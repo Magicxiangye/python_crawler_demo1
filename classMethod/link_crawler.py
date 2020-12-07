@@ -27,11 +27,15 @@ def link_crawler(seed_url, link_regex=None, delay=5, max_depth=-1, max_urls=-1, 
         url = crawl_queue.pop()
         depth = seen[url]
         # check url passes robots.txt restrictions
+        #先把检测可爬取列表的功能关闭
         if rp.can_fetch(user_agent, url):
             html = D(url)
             links = []
             #回调函数（写入文档.csv文件）
             if scrape_callback:
+                # 还得解码编码
+                #encode_type = chardet.detect(html)
+                #html = html.decode(encoding='gbk')
                 links.extend(scrape_callback(url, html) or [])
 
             if depth != max_depth:
@@ -39,8 +43,8 @@ def link_crawler(seed_url, link_regex=None, delay=5, max_depth=-1, max_urls=-1, 
                 if link_regex:
                     # 读取robot文件只爬取可以爬取的文件网址
                     # 还得解码编码
-                    encode_type = chardet.detect(html)
-                    html = html.decode(encode_type['encoding'])
+                    #encode_type = chardet.detect(html)
+                    #html = html.decode(encode_type['encoding'])
                     links.extend(link for link in get_links(html) if re.match(link_regex, link))
 
                 for link in links:
@@ -93,6 +97,6 @@ def get_links(html):
 
 
 if __name__ == '__main__':
-    link_crawler('http://example.webscraping.com', '/(index|places)/(index|default)/(index|view)', delay=0, num_retries=1, user_agent='BadCrawler')
+    #link_crawler('http://example.webscraping.com', '/(index|places)/(index|default)/(index|view)', delay=0, num_retries=1, user_agent='BadCrawler')
     link_crawler('http://example.webscraping.com', '/(index|places)/(index|default)/(index|view)', delay=0, num_retries=1, max_depth=1,
                  user_agent='GoodCrawler')

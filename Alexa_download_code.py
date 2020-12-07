@@ -16,7 +16,7 @@ from classMethod.Downloader import Downloader
 D = Downloader()
 zipped_data = D('http://s3.amazonaws.com/alexa-static/top-1m.csv.zip')
 urls = []#url 的list
-#开始解压(并解析文件)
+#开始解压(并解析文件)(zipfile 必须要有一个类似于文件接口的东西才可以接收)
 with ZipFile(StringIO(zipped_data)) as zf:
     #获取压缩包中csv文件的名字
     csv_filename = zf.namelist()[0]
