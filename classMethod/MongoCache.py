@@ -39,6 +39,7 @@ class MongoCache:
     def __setitem__(self, url ,result):
         #url要当唯一值传入id
         record = {'result' : Binary(zlib.compress(pickle.dumps(result))),'timestamp': datetime.utcnow()}
+        print("存了")
         # 会有重复的存储，唯一的存储的方法是，使用update()使用唯一标识来当id，存在时更新，不存在时插入
         self.db.webpage.update_one({'_id': url},{'$set': record},upsert=True)
 
@@ -50,5 +51,6 @@ if __name__ == '__main__':
     #下载这个网页的回调函数
     scrape_callback = AlexaCallback()
     test_url = 'http://s3.amazonaws.com/alexa-static/top-1m.csv.zip'
+    test = 'http://amazonaws.com'
     #用的时候把检视爬虫文件的功能去掉，就可以正常的爬取了
     link_crawler(seed_url=test_url, cache=MongoCache(),scrape_callback=scrape_callback)

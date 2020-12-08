@@ -8,6 +8,8 @@ import itertools #操作迭代对象的函数
 import urllib.parse #来创建url的绝对路径（url的解析，合并，编码，解码）
 import urllib.robotparser #还是python3的独特拆分
 from classMethod.Throttle import Throttle
+import sys
+import io
 import socket
 
 class Downloader:
@@ -47,6 +49,8 @@ class Downloader:
 
     #下载方法（不用缓存，简单下载从的话，直接调用这个方法就可以，不用使用__call__函数来使用这个方法）
     def download(self,url,headers,proxy,num_retries,data=None):
+        #目前没用上
+        #sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')  # 改变标准输出的默认编码
         code = None
         print('Downloading:', url)
         request = urllib.request.Request(url, headers=headers)
@@ -56,8 +60,9 @@ class Downloader:
             proxy_params = {urllib.parse.urlparse(url).scheme: proxy}  # url协议有默认的,没有的话加上--像'http'
             opener.add_handler(urllib.request.ProxyHandler(proxy_params))
         try:
-            #直接格式转换btyes变为str(后面就不用麻烦了)
-            html = urllib.request.urlopen(request).read().decode('utf-8')
+            #直接格式转换btyes变为str(后面就不用麻烦了)(python3的urlopen的read是bytes类型的)(要看默认网页的格式吧)
+            html = urllib.request.urlopen(request).read()
+            html = html.decode('UTF-8')#换成需要变化的具体的格式（随着要使用的网页的变化而变化--巨他妈的坑）
         except urllib.error.HTTPError as e:
             print('Download error', e.reason)
             html = None

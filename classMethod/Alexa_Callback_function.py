@@ -7,6 +7,7 @@ import pickle
 from zipfile import ZipFile
 #数据流的库
 from io import StringIO
+from io import BytesIO
 
 
 class AlexaCallback:
@@ -20,6 +21,7 @@ class AlexaCallback:
         if url == self.seed_url:
             #是种子的网站，可以开始下载解析网页的下载
             urls = []
+
             #先打开流，下载一下压缩文件包
             with ZipFile(StringIO(html)) as zf:
                 #读取解压list中需要的文件的名称
