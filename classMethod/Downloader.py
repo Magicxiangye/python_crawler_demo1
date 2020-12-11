@@ -2,15 +2,10 @@
 import random
 import urllib.request#python2.7里urllib2拆分的两个库使用
 import urllib.error
-import re #分析正则库
-import chardet   #需要导入这个模块，检测编码格式
-import itertools #操作迭代对象的函数
 import urllib.parse #来创建url的绝对路径（url的解析，合并，编码，解码）
 import urllib.robotparser #还是python3的独特拆分
 from classMethod.Throttle import Throttle
-import sys
-import io
-import socket
+
 
 class Downloader:
     #默认的设置
