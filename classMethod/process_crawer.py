@@ -53,7 +53,7 @@ def threaded_crawler(seed_url, delay=5, cache=None, scrape_callback=None, user_a
                             #将每一个地址都加入到MongoDB的queue中去
                             #先把url变为正常的地址
                             norma_link = normalize(seed_url=seed_url, link=link)
-                            #push到队列里
+                            #push到队列里（加入是数据库的函数会检测是否有重复）
                             crawl_queue.push(norma_link)
                 #不管是有回调函数还是没有回调函数
                 #只要是下载完了这个url，就要改成complete状态
@@ -84,11 +84,24 @@ def threaded_crawler(seed_url, delay=5, cache=None, scrape_callback=None, user_a
 
 
 
-
-
 #多进程的方法
 def process_link_crawler(args, **kwargs):
-    pass
+    #先获取的是电脑cpu的数量
+    num_cpus = multiprocessing.cpu_count()
+    print('Starting {} processes'.format(num_cpus))#格式化函数的输出
+    #多进程的保存
+    processes = []
+    #有几核的CPU开启几个进程
+    for i in range(num_cpus):
+        #每个进程又开启多线程
+        p = multiprocessing.Process(target=threaded_crawler, args=[args],kwargs=kwargs)
+        p.start()
+        processes.append(p)
+
+    # join的原理就是依次检验线程池中的线程是否结束，没有结束就阻塞直到线程结束，如果结束则跳转执行下一个线程的join函数。
+    #查看所有的进程是否完成
+    for p in processes:
+        p.join()
 
 #把每个网页的具体地址拼接好
 def normalize(seed_url, link):
