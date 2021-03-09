@@ -84,6 +84,7 @@ def threaded_crawler(seed_url, delay=5, cache=None, scrape_callback=None, user_a
 
 
 
+#  主要的使用的方法（多进程的方法）
 #多进程的方法
 def process_link_crawler(args, **kwargs):
     #先获取的是电脑cpu的数量
