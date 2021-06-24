@@ -3,6 +3,8 @@
 import scrapy
 
 
+from scrapyModel.scrapyModel.items import BookItem
+
 # 继承scrapy.Spider
 class BookSpider(scrapy.Spider):
 
@@ -30,12 +32,10 @@ class BookSpider(scrapy.Spider):
         # 每一本书的信息在<article class="product_pod">中，我们使用
         # css()方法找到所有这样的 article 元素，并依次迭代
         for book in response.css('article.product_pod'):
-            name = book.xpath('./h3/a/@title').extract_first()
-            price = book.css('p.price_color::text').extract_first()
-            yield {
-                'name': name,
-                'price': price,
-            }
+            book = BookItem()
+            book['name'] = book.xpath('./h3/a/@title').extract_first()
+            book['price'] = book.css('p.price_color::text').extract_first()
+            yield book
 
         # 提取链接
         # 下一页的 url 在 ul.pager > li.next > a 里面
