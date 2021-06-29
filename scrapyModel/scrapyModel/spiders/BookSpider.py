@@ -2,12 +2,19 @@
 
 import scrapy
 
+import os
+import sys
 
-from scrapyModel.scrapyModel.items import BookItem
+
+# sys.path.append(r"E:\PycharmProject\python_crawler_demo1\scrapyModel\scrapyModel")
+current_directory = os.path.dirname(os.path.abspath(__file__))
+root_path = os.path.abspath(os.path.dirname(current_directory) + os.path.sep + ".")
+sys.path.append(root_path)
+
+from scrapyModel.items import BookItem
 
 # 继承scrapy.Spider
 class BookSpider(scrapy.Spider):
-
     # 每一个爬虫的唯一标志
     # 一个项目有多个爬虫，name为这个爬虫在这个项目中的唯一的标识
     # 用于在shell中启动自己写的爬虫，这个就是爬虫名
@@ -27,15 +34,17 @@ class BookSpider(scrapy.Spider):
     # 页面解析函数通常被实现成一个生成器函数，
     # 每一项从页面中提 取的数据以及每一个对链接页面的下载请求
     # 都由yield语句提交给 Scrapy引擎。
-    def parse(self, response, **kwargs):
-        # 提取书籍的数据
+    def parse(self, response):
+        # 提取数据
         # 每一本书的信息在<article class="product_pod">中，我们使用
         # css()方法找到所有这样的 article 元素，并依次迭代
         for book in response.css('article.product_pod'):
-            book = BookItem()
-            book['name'] = book.xpath('./h3/a/@title').extract_first()
-            book['price'] = book.css('p.price_color::text').extract_first()
-            yield book
+            name = book.xpath('./h3/a/@title').extract_first()
+            price = book.css('p.price_color::text').extract_first()
+            yield {
+                'name': name,
+                'price': price,
+            }
 
         # 提取链接
         # 下一页的 url 在 ul.pager > li.next > a 里面
@@ -46,9 +55,3 @@ class BookSpider(scrapy.Spider):
             next_url = response.urljoin(next_url)
             # request Header参数：http的请求头
             yield scrapy.Request(next_url, callback=self.parse)
-
-
-
-
-
-
